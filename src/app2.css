@@ -1,0 +1,19 @@
+.app2{
+    display: flex;
+
+}
+.tab{
+    border: 1px solid;
+    width: 50vw;
+    height: 5vh;
+    padding: 5px;
+}
+.selected{
+    background: yellowgreen;
+}
+.content1{
+    display: none;
+}
+.active{
+    display:block;
+}

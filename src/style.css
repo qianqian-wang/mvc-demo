@@ -1,0 +1,15 @@
+*{margin: 0;padding: 0;}
+*{box-sizing: border-box;}
+*::after *::before{margin: 0;padding: 0;box-sizing: border-box;}
+body{
+    overflow: hidden;
+}
+.page{
+    display: flex;
+    flex-wrap: wrap;
+}
+.app{
+    border: 1px solid;
+    width:50vw;
+    height: 50vh;    
+}
