@@ -11245,52 +11245,183 @@ return jQuery;
 },{"process":"C:\\Users\\123\\AppData\\Local\\Yarn\\Data\\global\\node_modules\\process\\browser.js"}],"app1.js":[function(require,module,exports) {
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var number = parseInt((0, _jquery2.default)('#number').text());
+var eventBus = (0, _jquery2.default)({});
+//数据相关的，都放到m
+var m = {
+    data: {
+        number: parseInt(localStorage.getItem('number')) || 100
+    },
+    create: function create() {},
+    delete: function _delete() {},
+    update: function update(data) {
+        Object.assign(m.data, data);
+        eventBus.trigger('m-updated');
+        localStorage.setItem('number', m.data.number);
+    },
+    get: function get() {}
+};
+//视图相关的都放到v
+var v = {
+    el: null,
+    html: '                        \n    <div class="app">\n        <div id="number">{{n}}</div>\n        <button id="add1">\u52A0</button>\n        <button id="subtract1">\u51CF</button>\n        <button id="multiply2">\u4E582</button>\n        <button id="divide2">\u96642</button>\n    </div>\n',
+    init: function init(container) {
+        v.el = (0, _jquery2.default)(container);
+    },
+    render: function render(n) {
+        if (v.el.children.length !== 0) {
+            v.el.empty();
+        }
+        (0, _jquery2.default)(v.html.replace("{{n}}", n)).prependTo(v.el);
+    }
+};
+//其他都c
+var c = {
+    init: function init(container) {
+        v.init(container);
+        v.render(m.data.number);
+        c.autoBindEvents();
+        eventBus.on('m-updated', function () {
+            v.render(m.data.number);
+        });
+    },
 
-(0, _jquery2.default)('#add1').on('click', function () {
-    number += 1;
-    (0, _jquery2.default)('#number').text(number);
-});
-(0, _jquery2.default)('#subtract1').on('click', function () {
-    number -= 1;
-    (0, _jquery2.default)('#number').text(number);
-});
-(0, _jquery2.default)('#multiply2').on('click', function () {
-    number = number * 2;
-    (0, _jquery2.default)('#number').text(number);
-});
-(0, _jquery2.default)('#divide2').on('click', function () {
-    number = number / 2;
-    (0, _jquery2.default)('#number').text(number);
-});
+    events: {
+        'click #add1': 'add',
+        'click #subtract1': 'sub',
+        'click #multiply2': 'mul',
+        'click #divide2': 'div'
+    },
+    add: function add() {
+        m.update({ number: m.data.number + 1 });
+    },
+    sub: function sub() {
+        m.update({ number: m.data.number - 1 });
+    },
+    mul: function mul() {
+        m.update({ number: m.data.number * 2 });
+    },
+    div: function div() {
+        m.update({ number: m.data.number / 2 });
+    },
+    autoBindEvents: function autoBindEvents() {
+        for (var key in c.events) {
+            var value = c.events[key];
+            var index = key.indexOf(' ');
+            var a = key.slice(0, index);
+            var b = key.slice(index + 1);
+            v.el.on(a, b, c[value]);
+        }
+    }
+};
+
+exports.default = c;
 },{"jquery":"..\\node_modules\\jquery\\dist\\jquery.js"}],"app2.css":[function(require,module,exports) {
 
 var reloadCSS = require('_css_loader');
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
 },{"_css_loader":"C:\\Users\\123\\AppData\\Local\\Yarn\\Data\\global\\node_modules\\parcel\\src\\builtins\\css-loader.js"}],"app2.js":[function(require,module,exports) {
-'use strict';
+"use strict";
 
-var _jquery = require('jquery');
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _jquery = require("jquery");
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-require('./app2.css');
+require("./app2.css");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-(0, _jquery2.default)('.app2').on('click', '.tab', function (e) {
-    var n = (0, _jquery2.default)(e.currentTarget).index();
-    (0, _jquery2.default)('.app2').children().eq(n).addClass('selected').siblings().removeClass('selected');
-    (0, _jquery2.default)('.content').children().eq(n).addClass('active').siblings().removeClass('active');
-});
-(0, _jquery2.default)('.app2').children().eq(0).trigger('click');
+var eventBus = (0, _jquery2.default)({});
+var m = {
+    data: {
+        index: 0
+    },
+    create: function create() {},
+    delete: function _delete() {},
+    update: function update(data) {
+        console.log("zheli4" + data.index);
+        Object.assign(m.data, data);
+        console.log("zheli5" + m.data.index);
+        eventBus.trigger('m-updated');
+    },
+    get: function get() {}
+};
+var v = {
+    el: null,
+    html: function html(index) {
+        console.log("zheli7" + index);
+        return "<div class=\"app\">\n            <div class='app2'>\n                <div class=\"tab " + (index === 0 ? 'selected' : '') + "\" data-index=\"0\">\u8FD9\u4E2A</div>\n                <div class=\"tab " + (index === 1 ? 'selected' : '') + "\" data-index=\"1\">\u90A3\u4E2A</div>\n            </div>\n            <div class='content'>\n                <div class=\"content1 " + (index === 0 ? 'active' : '') + "\">\u8FD9\u4E2A\u663E\u793A\u5566</div>\n                <div class=\"content1 " + (index === 1 ? 'active' : '') + "\">\u90A3\u4E2A\u663E\u793A\u5566</div>\n            </div>\n\n    </div> \n";
+    },
+    init: function init(container) {
+        v.el = (0, _jquery2.default)(container);
+    },
+    render: function render(index) {
+        if (v.el.children.length !== 0) {
+            v.el.empty();
+        }
+        console.log("zheli6" + index);
+        (0, _jquery2.default)(v.html(index)).appendTo(v.el);
+    }
+};
+var c = {
+    init: function init(container) {
+
+        v.init(container);
+        v.render(m.data.index);
+        c.autoBindEvents();
+        eventBus.on('m-updated', function () {
+            v.render(m.data.index);
+            console.log("zheli1" + m.data.index);
+        });
+    },
+
+    events: {
+        'click .tab': 'x'
+    },
+    x: function x(e) {
+        var index = e.currentTarget.dataset.index;
+        console.log("zheli2" + m.data.index);
+        console.log("zheli3" + e.currentTarget.dataset.index);
+        m.update({ index: index });
+    },
+    autoBindEvents: function autoBindEvents() {
+        for (var key in c.events) {
+            var value = c.events[key];
+            var index = key.indexOf(' ');
+            var a = key.slice(0, index);
+            var b = key.slice(index + 1);
+            v.el.on(a, b, c[value]);
+        }
+    }
+};
+
+exports.default = c;
+
+// $('.app2').on('click', '', (e) => {
+//     let n = $(e.currentTarget).index()
+//     $('.app2').children().eq(n)
+//         .addClass('selected')
+//         .siblings().removeClass('selected')
+//     $('.content').children()
+//         .eq(n).addClass('active')
+//         .siblings().removeClass('active')
+
+// })
+// $('.app2').children().eq(0).trigger('click')
 },{"jquery":"..\\node_modules\\jquery\\dist\\jquery.js","./app2.css":"app2.css"}],"app3.css":[function(require,module,exports) {
 
 var reloadCSS = require('_css_loader');
@@ -11306,6 +11437,9 @@ var _jquery2 = _interopRequireDefault(_jquery);
 require('./app3.css');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var html = '\n    <div id="app3" class="app">\n         <div class=\'square\'></div>\n    </div>\n';
+var $element = (0, _jquery2.default)(html).appendTo((0, _jquery2.default)('.page'));
 
 (0, _jquery2.default)('.square').on('click', function () {
     (0, _jquery2.default)('.square').toggleClass('move');
@@ -11326,6 +11460,8 @@ require('./app4.css');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var html = '\n<div id="app4" class="app">\n    <div class=\'yuan\'></div>\n</div>\n';
+var $element = (0, _jquery2.default)(html).appendTo((0, _jquery2.default)('.page'));
 (0, _jquery2.default)('.yuan').on('mouseenter', function () {
     (0, _jquery2.default)('.yuan').addClass('changes');
 });
@@ -11334,13 +11470,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 require('./style.css');
 
-require('./app1.js');
+var _app = require('./app1.js');
 
-require('./app2.js');
+var _app2 = _interopRequireDefault(_app);
+
+var _app3 = require('./app2.js');
+
+var _app4 = _interopRequireDefault(_app3);
 
 require('./app3.js');
 
 require('./app4.js');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_app2.default.init('#app1');
+_app4.default.init('#app2');
 },{"./style.css":"style.css","./app1.js":"app1.js","./app2.js":"app2.js","./app3.js":"app3.js","./app4.js":"app4.js"}],"C:\\Users\\123\\AppData\\Local\\Yarn\\Data\\global\\node_modules\\parcel\\src\\builtins\\hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -11370,7 +11515,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '51579' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '58688' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

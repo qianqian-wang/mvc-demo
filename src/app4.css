@@ -12,11 +12,11 @@
 
 .yuan.changes{
     animation-duration: 2s;
-    animation-name: changes;
+    animation-name: changes1;
     animation-iteration-count: infinite;
     animation-direction: alternate;
 }
-@keyframes changes{
+@keyframes changes1{
     from{
         background: red;
     }
